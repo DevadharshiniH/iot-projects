@@ -1,0 +1,46 @@
+#include <ThingSpeak.h>
+#include <ESP8266WiFi.h>
+#define LED D4
+
+const char *ssid =  "try_wifi";     // replace with your wifi ssid and wpa2 key
+const char *pass =  "88888888";
+const char* server = "api.thingspeak.com";
+
+WiFiClient client;
+unsigned long myChannelNumber = 3004036; //Your Channel Number (Without Brackets)
+const char * myWriteAPIKey = "NP1PC66EPK5TOFGE"; //Your Write  // NP1PC66EPK5TOFGE
+
+int a;
+
+void setup()
+{
+
+  Serial.begin(9600);
+
+  pinMode(LED, OUTPUT);    // LED pin as output.
+  WiFi.begin(ssid, pass);
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.println("WIFI SEARCHING...");
+    digitalWrite(LED, 1);   // turn the LED on (HIGH is the voltage level)
+    delay(500);                       // wait for a second
+    digitalWrite(LED, 0);    // turn the LED off by making the voltage LOW
+    delay(500);
+  }
+  Serial.println("WIFI CONNECTED");
+  delay(3000);
+
+  ThingSpeak.begin(client);
+}
+
+void loop()
+{
+
+  ThingSpeak.setField( 1, a);
+  ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
+  delay(15000);
+  Serial.println("DATA UPDATED");
+  a++;
+
+}
